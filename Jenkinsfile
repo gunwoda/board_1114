@@ -62,7 +62,7 @@ pipeline{
                 sh "docker run -d -p 8081:8080 --name board gunwoda/board:latest"
             }
         }
-    ]
+    }
     post{
         always{
             sh 'docker stop jenkins1112'
