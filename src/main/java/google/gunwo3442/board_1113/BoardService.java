@@ -13,20 +13,20 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    public void saveBoard(BoardDTO boardDTO) {
+    public int saveBoard(BoardDTO boardDTO) {
         try{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date published_date = sdf.parse(boardDTO.getDate());
 
             Board board = Board.builder()
                     .user_id(boardDTO.getUser_id())
-                    .board_id(boardDTO.getBoard_id())
                     .date(published_date)
                     .title(boardDTO.getTitle())
                     .content(boardDTO.getContent())
                     .build();
 
-            boardRepository.save(board);
+            Board saveBoard = boardRepository.save(board);
+            return saveBoard.getBoard_id();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -34,19 +34,26 @@ public class BoardService {
     }
     public BoardDTO getBoardDTO(int board_id) {
         Board board = boardRepository.findById(board_id).orElse(null);
+        if (board == null) {
+            return null; // board가 없을 경우 null 반환
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String str_date = sdf.format(board.getDate());
+
+        // DTO로 변환
         BoardDTO boardDTO = new BoardDTO();
         boardDTO.setBoard_id(board.getBoard_id());
         boardDTO.setUser_id(board.getUser_id());
         boardDTO.setTitle(board.getTitle());
         boardDTO.setContent(board.getContent());
         boardDTO.setDate(str_date);
+
         return boardDTO;
     }
-    public ArrayList<BoardDTO> getBoard() {
+    public List<BoardDTO> getBoard() {
         try{
-            ArrayList<BoardDTO> boardDTOs = new ArrayList<>();
+            List<BoardDTO> boardDTOs = new ArrayList<>();
             List<Board> boards = boardRepository.findAll();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             for (Board board : boards) {
@@ -65,5 +72,4 @@ public class BoardService {
             throw new RuntimeException(e);
         }
     }
-
 }
