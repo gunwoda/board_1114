@@ -32,5 +32,15 @@ pipeline{
                 ])
              }
         }
+        stage("Docker image Build"){
+            steps{
+                sh "docker build -t gunwoda/board ."
+            }
+        }
+        stage("Docker image run"){
+            steps{
+                sh "docker run -d -p 8081:8080 --name board gunwoda/board"
+            }
+        }
     }
 }
