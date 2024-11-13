@@ -65,7 +65,7 @@ pipeline{
     }
     post{
         always{
-            sh 'docker stop jenkins1112'
+            sh 'docker stop gunwoda/board'
         }
     }
 }
