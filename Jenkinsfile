@@ -34,6 +34,11 @@ pipeline{
         }
         stage("Docker image Build"){
             steps{
+                sh "./gradlew clean build"
+            }
+        }
+        stage("Docker image Build"){
+            steps{
                 sh "docker build -t gunwoda/board ."
             }
         }
