@@ -52,7 +52,7 @@ pipeline{
                 sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
             }
         }
-        stage("Docker Push"){
+        stage("Docker image Push"){
             steps{
                 sh "docker push gunwoda/board:latest"
             }
