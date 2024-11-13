@@ -32,27 +32,38 @@ public class BoardService {
             throw new RuntimeException(e);
         }
     }
-
+    public BoardDTO getBoardDTO(int board_id) {
+        Board board = boardRepository.findById(board_id).orElse(null);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String str_date = sdf.format(board.getDate());
+        BoardDTO boardDTO = new BoardDTO();
+        boardDTO.setBoard_id(board.getBoard_id());
+        boardDTO.setUser_id(board.getUser_id());
+        boardDTO.setTitle(board.getTitle());
+        boardDTO.setContent(board.getContent());
+        boardDTO.setDate(str_date);
+        return boardDTO;
+    }
     public ArrayList<BoardDTO> getBoard() {
         try{
             ArrayList<BoardDTO> boardDTOs = new ArrayList<>();
             List<Board> boards = boardRepository.findAll();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-
             for (Board board : boards) {
-                String str_date = sdf.format(board.getDate());
-                BoardDTO boardDTO = new BoardDTO();
-                boardDTO.setBoard_id(board.getBoard_id());
-                boardDTO.setUser_id(board.getUser_id());
-                boardDTO.setTitle(board.getTitle());
-                boardDTO.setContent(board.getContent());
-                boardDTO.setDate(str_date);
-                boardDTOs.add(boardDTO);
+                int id = board.getBoard_id();
+                boardDTOs.add(getBoardDTO(id));
             }
             return boardDTOs;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+    public void deleteBoard(int board_id) {
+        try{
+            boardRepository.deleteById(board_id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
