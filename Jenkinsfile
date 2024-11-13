@@ -1,5 +1,8 @@
 pipeline{
     agent any
+    environment{
+        DOCKERHUB_AUTH = credentials("docker-hub")
+    }
     stages{
         stage("Print"){
             steps{
@@ -40,13 +43,32 @@ pipeline{
 
         stage("Docker image Build"){
             steps{
-                sh "docker build -t gunwoda/board ."
+                sh "docker build -t gunwoda/board:latest ."
+            }
+        }
+
+        stage("Docker login"){
+            steps{
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+            }
+        }
+        stage("Docker Push"){
+            steps{
+                sh "docker push gunwoda/board:latest"
             }
         }
         stage("Docker image run"){
             steps{
-                sh "docker run -d -p 8081:8080 --name board gunwoda/board"
+                sh "docker run -d -p 8081:8080 --name board gunwoda/board:latest"
             }
         }
+        post{
+            always{
+                sh 'docker stop jenkins1112'
+            }
+         }
+
+
+
     }
 }
